@@ -1,4 +1,4 @@
-# a simple program that is reliant on caching to reduce memory consumption and dynamic programming to reduce computational time.
+# this program generates polynomials for the GD model and uses memoisation to reduce memory consumption and computational time.
 
 import sys
 print sys.argv
@@ -20,6 +20,14 @@ elif sys.argv[4] == 'False':
 else:
   print("ERROR")
   sys.exit()
+  
+if sys.argv[5] == 'True':
+  parental_specific = True
+elif sys.argv[5] == 'False':
+  parental_specific = False
+else:
+  print("ERROR")
+  sys.exit()
 
 import sage.libs.ecl
 sage.libs.ecl.ecl_eval("(ext:set-limit 'ext:heap-size 0)")
@@ -32,13 +40,13 @@ if not balanced:
   var('s,a,b,c')
   def f(s): return a+b*s+c*s^2 # the recursive generating function
 
-prefix = "/Users/lmcintosh/GD/GFS/B"+str(balanced)+"_FA"+str(forced_alive)+"_"
+prefix = "/Users/lmcintosh/GD/GFS/B_"+str(balanced)+"_FA"+str(forced_alive)+"_"+str(parental_specific)+"_"
 suffix = "_12_dec"
 filename_output = prefix+"N"+str(N)+"_M"+str(M)+suffix
 
 if not os.path.isfile(filename_output):
   if N == 0 and M == -1:
-    expr = s
+    expr = s^2
     save(expr,filename_output)
   else:
     # load the preceding solution (do this dynamically to minimise memory consuption as it is the limiting factor)
