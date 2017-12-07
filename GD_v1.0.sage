@@ -46,7 +46,10 @@ filename_output = prefix+"N"+str(N)+"_M"+str(M)+suffix
 
 if not os.path.isfile(filename_output):
   if N == 0 and M == -1:
-    expr = s^2
+    if parental_specific:
+      expr = s
+    else:
+      expr = s^2
     save(expr,filename_output)
   else:
     # load the preceding solution (do this dynamically to minimise memory consuption as it is the limiting factor)
