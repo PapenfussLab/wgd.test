@@ -40,7 +40,7 @@ if not balanced:
   var('s,a,b,c')
   def f(s): return a+b*s+c*s^2 # the recursive generating function
 
-prefix = "/Users/lmcintosh/GD/GFS/B_"+str(balanced)+"_FA"+str(forced_alive)+"_"+str(parental_specific)+"_"
+prefix = "/Users/lmcintosh/GD/GFS/B_"+str(balanced)+"_FA"+str(forced_alive)+"_PS"+str(parental_specific)+"_"
 suffix = "_12_dec"
 filename_output = prefix+"N"+str(N)+"_M"+str(M)+suffix
 
@@ -73,7 +73,7 @@ else:
 
 x=expr.coefficients(s)
 for j in range(len(x)):
-  prefix="/Users/lmcintosh/GD/terms/B"+str(balanced)+"_FA"+str(forced_alive)+"_"+"N"+str(N)+"_M"+str(M)+"/"
+  prefix = "/Users/lmcintosh/GD/GFS/B_"+str(balanced)+"_FA"+str(forced_alive)+"_PS"+str(parental_specific)+"_"+"N"+str(N)+"_M"+str(M)+"/"
   if not os.path.exists(prefix):
     os.makedirs(prefix)
   filename = prefix+"c"+str(x[j][1]) + suffix
