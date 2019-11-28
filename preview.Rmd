@@ -7,8 +7,8 @@ output:
 
 ```{r,warning=FALSE,include=TRUE, include=TRUE}
 rm(list=ls())
-# parent_dir = "/Users/lmcintosh/Desktop/ALL_CALLS"
-parent_dir = "/Users/lmcintosh/Dropbox/CASCADE/CNV"
+# parent_dir = "./ALL_CALLS"
+parent_dir = "./CASCADE/CNV"
 all_files = list.files(parent_dir)
 # all_files = all_files
 library(ggplot2)
@@ -18,8 +18,8 @@ library(gridExtra)
 number_ticks <- function(n) {function(limits) pretty(limits, n)}
 load_centromeres <- function(){
   file = "centromeres.txt"
-  BASE =  "/Users/lmcintosh/Documents/GRIDITH_AUTOMATION/"
-  centromeres <- read.table(paste(BASE,file,sep=''), sep="\t", header=FALSE)
+  BASE =  "."
+  centromeres <- read.table(paste(BASE, file,sep=''), sep="\t", header=FALSE)
   colnames(centromeres) <- c("chr","x")
   centromeres$x <- as.numeric(centromeres$x)*10^6 
   return(centromeres)
@@ -45,59 +45,7 @@ get_CN_track <- function(mat,xmax){
 }
 
 
-# likelihoodGD <- function(alpha,X,pow,Xzero,sizeXzero){
-#   likelihoods = data.frame('N'=as.numeric(),'M'=as.numeric(),'likelihood'=as.numeric())
-#   for(N in 0:3){
-#     for(M in -1:3){
-#       a = alpha
-#       b = 1-2*alpha
-#       c = alpha
-#       likelihood = 0
-#       N= as.character(N)
-#       M=as.character(M)
-#       for(name in names(X)){
-#         mylikelihood = getmylikelihood(name,N,M,FA=F)
-#         # print(mylikelihood)
-#         if(is.null(mylikelihood)){
-#           likelihood=-Inf
-#           next
-#         }
-#         val = as.numeric(eval(parse(text=mylikelihood)))
-#         likelihood = likelihood+(pow*X[name]*log(val))
-#       }
-#       for(name in names(Xzero)){
-#         mylikelihood = getmylikelihood(name,N,M,FA=T)
-#         # print(mylikelihood)
-#         if(is.null(mylikelihood)){
-#           likelihood=-Inf
-#           next
-#         }
-#         val = as.numeric(eval(parse(text=mylikelihood)))
-#         likelihood = likelihood+(sizeXzero*Xzero[name]*log(val))
-#       }
-#       
-#       likelihoods <- rbind(likelihoods,data.frame('N'=N,'M'=M,'likelihood'=likelihood))
-#     }
-#   }
-#   LIKES = matrix(rep(NA),nrow=6,ncol=6)
-#   for(N in 0:4){
-#     for(M in -1:3){
-#       temp = likelihoods[which(likelihoods$N == N),]
-#       temp = temp[which(temp$M == M),]
-#       
-#       if(nrow(temp)>0) {
-#         # print(temp)
-#         # print(as.numeric(temp[,"likelihood"]))
-#         LIKES[N+1,M+2] = as.numeric(temp[,"likelihood"])
-#       }
-#     }
-#   }
-#   # print(LIKES)
-#   return(LIKES)
-# }
-
 likelihoodGDany <- function(alpha,simpledata,half = FALSE,FA=TRUE,maxN=6,maxM=3){
-  # likelihoodhalfGD <- function(alpha,simpledata,half = FALSE){
   likelihoods = data.frame('N'=as.numeric(),'M'=as.numeric(),'likelihood'=as.numeric())
   mylikelihood <- lapply(simpledata[1,c("A","B")],function(x) getmylikelihood(x,0,-1,FA=F))
   mylikelihood_nogd <- lapply(simpledata[1,c("A","B")],function(x) getmylikelihood(x,0,-1,FA=F))
@@ -189,7 +137,7 @@ getmylikelihood <- function(x,N,M,FA){
   } else{
     FA="False"
   }
-  dir = paste("/Users/lmcintosh/GD/terms/BTrue_FA",FA,"_N",as.character(N),"_M",as.character(M),"/",sep="")
+  dir = paste("./GD/terms/BTrue_FA",FA,"_N",as.character(N),"_M",as.character(M),"/",sep="")
   file = paste("c",as.character(x),"_12_dec",sep="")
   filename = paste(dir,file,sep="")
   if(!file.exists(filename)){
