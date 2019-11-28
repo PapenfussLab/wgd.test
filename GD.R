@@ -1,9 +1,11 @@
+# Genome doubling test
+#
+# Author: Lachlan Mcintosh
+# Conceived by: Lachlan Mcintosh and Tony Papenfuss
+
 # rm(list=ls())
 
-# this version actually works!
-
-# parent_dir = "/Users/lmcintosh/Desktop/ALL_CALLS"
-parent_dir = "/Users/lmcintosh/Dropbox/CASCADE/CNV"
+parent_dir = "."
 all_files = list.files(parent_dir)
 all_files = all_files[[1]]
 all_files
@@ -14,8 +16,8 @@ library(gridExtra)
 number_ticks <- function(n) {function(limits) pretty(limits, n)}
 load_centromeres <- function(){
   file = "centromeres.txt"
-  BASE =  "/Users/lmcintosh/Documents/GRIDITH_AUTOMATION/"
-  centromeres <- read.table(paste(BASE,file,sep=''), sep="\t", header=FALSE)
+  BASE =  "."
+  centromeres <- read.table(paste(BASE, file, sep=''), sep="\t", header=FALSE)
   colnames(centromeres) <- c("chr","x")
   centromeres$x <- as.numeric(centromeres$x)*10^6 
   return(centromeres)
@@ -31,7 +33,7 @@ get_CN_track <- function(mat,xmax){
     geom_segment(aes(x = start.pos, y = B, xend = end.pos, yend = B),size=1)+
     geom_vline(data=centromeres,aes(xintercept=x,col=chromosome))+
     facet_grid(.~chromosome,scales = "free_x", space = "free")+
-    scale_x_continuous(breaks=seq(0,3*10^9,50*10^6))+ 
+    scale_x_continuous(breaks=seq(0, 3*10^9, 50*10^6))+ 
     theme_bw()+
     theme(axis.text.x = element_blank(),legend.position="none") + #,legend.background = element_rect(fill = "white"),panel.spacing = unit(, "lines")
     xlab("50 MB ticks")+
@@ -40,57 +42,6 @@ get_CN_track <- function(mat,xmax){
   return(g)
 }
 
-
-# likelihoodGD <- function(alpha,X,pow,Xzero,sizeXzero){
-#   likelihoods = data.frame('N'=as.numeric(),'M'=as.numeric(),'likelihood'=as.numeric())
-#   for(N in 0:3){
-#     for(M in -1:3){
-#       a = alpha
-#       b = 1-2*alpha
-#       c = alpha
-#       likelihood = 0
-#       N= as.character(N)
-#       M=as.character(M)
-#       for(name in names(X)){
-#         mylikelihood = getmylikelihood(name,N,M,FA=F)
-#         # print(mylikelihood)
-#         if(is.null(mylikelihood)){
-#           likelihood=-Inf
-#           next
-#         }
-#         val = as.numeric(eval(parse(text=mylikelihood)))
-#         likelihood = likelihood+(pow*X[name]*log(val))
-#       }
-#       for(name in names(Xzero)){
-#         mylikelihood = getmylikelihood(name,N,M,FA=T)
-#         # print(mylikelihood)
-#         if(is.null(mylikelihood)){
-#           likelihood=-Inf
-#           next
-#         }
-#         val = as.numeric(eval(parse(text=mylikelihood)))
-#         likelihood = likelihood+(sizeXzero*Xzero[name]*log(val))
-#       }
-#       
-#       likelihoods <- rbind(likelihoods,data.frame('N'=N,'M'=M,'likelihood'=likelihood))
-#     }
-#   }
-#   LIKES = matrix(rep(NA),nrow=6,ncol=6)
-#   for(N in 0:4){
-#     for(M in -1:3){
-#       temp = likelihoods[which(likelihoods$N == N),]
-#       temp = temp[which(temp$M == M),]
-#       
-#       if(nrow(temp)>0) {
-#         # print(temp)
-#         # print(as.numeric(temp[,"likelihood"]))
-#         LIKES[N+1,M+2] = as.numeric(temp[,"likelihood"])
-#       }
-#     }
-#   }
-#   # print(LIKES)
-#   return(LIKES)
-# }
 
 likelihoodGDany <- function(alpha,simpledata,half = FALSE,FA=TRUE,maxN=6,maxM=3){
   # likelihoodhalfGD <- function(alpha,simpledata,half = FALSE){
@@ -184,7 +135,7 @@ getmylikelihood <- function(x,N,M,FA){
   } else{
     FA="False"
   }
-  dir = paste("/Users/lmcintosh/GD/terms/BTrue_FA",FA,"_N",as.character(N),"_M",as.character(M),"/",sep="")
+  dir = paste("./GD/terms/BTrue_FA",FA,"_N",as.character(N),"_M",as.character(M),"/",sep="")
   file = paste("c",as.character(x),"_12_dec",sep="")
   filename = paste(dir,file,sep="")
   if(!file.exists(filename)){
@@ -375,32 +326,11 @@ outputdf$GD_AIC <- outputdf$AIC_full <  outputdf$AIC_null
 outputdf$no_GD_AIC <-  outputdf$AIC_null <= outputdf$AIC_full
 
 # AIC is founded on information theory: it offers a relative estimate of the information lost when a given model is used to represent the process that generates the data. In doing so, it deals with the trade-off between the goodness of fit of the model and the complexity of the model. We choose the candidate model that minimized the information loss.
-# 
-
-
-# outputdf$AICc_full <-  outputdf$AIC_full + 2*(k+1)*(k+2)/(n-k-2)
-# outputdf$AICc_half <-  outputdf$AIC_half + 2*(k+1)*(k+2)/(n-k-2)
-# outputdf$AICc_null <-  outputdf$AIC_null + 2*(k-1+1)*(k-1+2)/(n-k-2)
-
-# The BIC is an asymptotic result derived under the assumptions that the data distribution is in an exponential family:
-# outputdf$BIC_full <- -2*outputdf$lmax +k*(log(n)-log(2*pi))
-# outputdf$BIC_half <- -2*outputdf$lmax_half+(k+23)*(log(n)-log(2*pi))
-# outputdf$BIC_null <- -2*outputdf$lmax_nogd+k*(log(n)-log(2*pi))
-# outputdf$GD_BIC <- outputdf$BIC_full < outputdf$BIC_half & outputdf$BIC_full < outputdf$BIC_null
-# outputdf$GD_half_BIC <- outputdf$BIC_half < outputdf$BIC_full & outputdf$BIC_half < outputdf$BIC_null
-# outputdf$no_GD_BIC <-  outputdf$BIC_null < outputdf$BIC_half & outputdf$BIC_null < outputdf$BIC_full
-
-# outputdf[,c("name","AIC_full","AIC_half","AIC_null","GD_AIC","GD_half_AIC","no_GD_AIC")]
-# outputdf[,c("name","BIC_full","BIC_half","BIC_null","GD_BIC","GD_half_BIC","no_GD_BIC")]
-# outputdf[,c("name","lmax","lmax_half","lmax_nogd","GD","GD_half","no_GD")]
 
 outputdf$bestAIC <- apply(outputdf[,c("AIC_full","AIC_null")],1,min)
 outputdf$rl_GD <- exp((outputdf$bestAIC - outputdf$AIC_full)/2)
 outputdf$rl_noGD <- exp((outputdf$bestAIC - outputdf$AIC_null)/2)
-# As an example, suppose that there are three candidate models, whose AIC values are 100, 102, and 110. Then the second model is exp((100 − 102)/2) = 0.368 times as probable as the first model to minimize the information loss. Similarly, the third model is exp((100 − 110)/2) = 0.007 times as probable as the first model to minimize the information loss.
-# outputdf[,c("rl_GD","rl_noGD")]
-# print(outputdf)
-
+                          
 write.table(outputdf,file = paste0("/Users/lmcintosh","/outputdf.txt"))
 
 all_files[which(!(all_files %in% outputdf$name))]
