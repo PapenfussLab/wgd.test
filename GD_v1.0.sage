@@ -38,38 +38,32 @@ def setup_recursive_generating_function(balanced):
 f(s) = setup_recursive_generating_function(balanced)
 
 
-def create_filename_output(N, M, balanced, forced_alive, parental_specific, output_folder='GFS'):
+def create_filename(N, M, balanced, forced_alive, parental_specific, output_folder='GFS'):
     filename = f'B{str(balanced)}_FA{str(forced_alive)}_PS{str(parental_specific)}_N{str(N)}_M{str(M)}_12_dec'
     return os.path.join(output_folder, filename)
-prefix = "/Users/lmcintosh/GD/GFS/B_" \
-         + str(balanced) \
-         + "_FA" \
-         + str(forced_alive) \
-         + "_PS" \
-         + str(parental_specific) \
-         + "_"
-suffix = "_12_dec"
-filename_output = prefix + "N" + str(N) + "_M" + str(M) + suffix
+
+
+filename_output = create_filename(N, M, balanced, forced_alive, parental_specific)
 
 if not os.path.isfile(filename_output):
     if N == 0 and M == -1:
         if parental_specific:
             expr = s
         else:
-            expr = s ^ 2
+            expr = s^2
         save(expr, filename_output)
     else:
-        # load the preceding solution (do this dynamically
-        # to minimise memory consumption as it is the limiting factor)
+        # load the preceding solution (do this dynamically to
+        # minimise memory consumption as it is the limiting factor)
         if M == -1:
-            filename_input = prefix + "N" + str(N - 1) + "_M" + str(M) + suffix
+            filename_input = create_filename(N - 1, M, balanced, forced_alive, parental_specific)
         else:
-            filename_input = prefix + "N" + str(N) + "_M" + str(M - 1) + suffix
+            filename_input = create_filename(N, M - 1, balanced, forced_alive, parental_specific)
         GFS = load(filename_input)
 
         if M == 0:
             # then double the genome
-            expr = GFS.substitute(s == s ^ 2)
+            expr = GFS.substitute(s == s^2)
         else:
             expr = GFS.substitute(s == f(s))
             if forced_alive:
