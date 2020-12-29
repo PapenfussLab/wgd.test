@@ -3,7 +3,15 @@
 
 import os
 import argparse
-import sage.libs.ecl
+
+from sage.libs.ecl import ecl_eval
+
+# from https://common-lisp.net/project/ecl/static/manual/Memory-Management.html
+# If the heap size had a finite limit, ECL offers the user the chance to resize it, issuing a
+# restartable condition. The user may at this point use (ext:set-limit 'ext:heap-size 0) to
+# remove the heap limit and avoid further messages, or use the (continue) restart to let ECL
+# enlarge the heap by some amount.
+ecl_eval("(ext:set-limit 'ext:heap-size 0)")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('N', type=int)
@@ -18,8 +26,6 @@ M = args.M
 balanced = args.balanced
 forced_alive = args.forced_alive
 parental_specific = args.parental_specific
-
-sage.libs.ecl.ecl_eval("(ext:set-limit 'ext:heap-size 0)")
 
 if balanced:
     var('s,a')
