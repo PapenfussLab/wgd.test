@@ -1,6 +1,5 @@
 # this program generates polynomials for the GD model and uses memoisation
 # to reduce memory consumption and computational time.
-
 import os
 import argparse
 
@@ -38,6 +37,10 @@ def setup_recursive_generating_function(balanced):
 
 f(s) = setup_recursive_generating_function(balanced)
 
+
+def create_filename_output(N, M, balanced, forced_alive, parental_specific, output_folder='GFS'):
+    filename = f'B{str(balanced)}_FA{str(forced_alive)}_PS{str(parental_specific)}_N{str(N)}_M{str(M)}_12_dec'
+    return os.path.join(output_folder, filename)
 prefix = "/Users/lmcintosh/GD/GFS/B_" \
          + str(balanced) \
          + "_FA" \
