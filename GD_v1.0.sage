@@ -1,5 +1,5 @@
-# this program generates polynomials for the GD model and uses memoisation to reduce memory
-# consumption and computational time.
+# this program generates polynomials for the GD model and uses memoisation
+# to reduce memory consumption and computational time.
 
 import os
 import argparse
@@ -27,19 +27,16 @@ balanced = args.balanced
 forced_alive = args.forced_alive
 parental_specific = args.parental_specific
 
-if balanced:
-    var('s,a')
 
-    # the recursive generating function
-    def f(s):
-        return a + (1 - 2 * a) * s + a * s ^ 2
+def setup_recursive_generating_function(balanced):
+    var('s, a, b, c')
+    if balanced:
+        return a + (1 - 2*a)*s + a*s^2
+    else:
+        return a + b*s + c*s^2
 
-if not balanced:
-    var('s,a,b,c')
 
-    # the recursive generating function
-    def f(s):
-        return a + b * s + c * s ^ 2
+f(s) = setup_recursive_generating_function(balanced)
 
 prefix = "/Users/lmcintosh/GD/GFS/B_" \
          + str(balanced) \
@@ -59,8 +56,8 @@ if not os.path.isfile(filename_output):
             expr = s ^ 2
         save(expr, filename_output)
     else:
-        # load the preceding solution (do this dynamically to minimise memory consumption as it is
-        # the limiting factor)
+        # load the preceding solution (do this dynamically
+        # to minimise memory consumption as it is the limiting factor)
         if M == -1:
             filename_input = prefix + "N" + str(N - 1) + "_M" + str(M) + suffix
         else:
@@ -81,17 +78,17 @@ else:
 
 x = expr.coefficients(s)
 for j in range(len(x)):
-    prefix = "/Users/lmcintosh/GD/GFS/B_"\
-             + str(balanced)\
-             + "_FA"\
-             + str(forced_alive)\
-             + "_PS"\
-             + str(parental_specific)\
-             + "_"\
-             + "N"\
-             + str(N)\
-             + "_M"\
-             + str(M)\
+    prefix = "/Users/lmcintosh/GD/GFS/B_" \
+             + str(balanced) \
+             + "_FA" \
+             + str(forced_alive) \
+             + "_PS" \
+             + str(parental_specific) \
+             + "_" \
+             + "N" \
+             + str(N) \
+             + "_M" \
+             + str(M) \
              + "/"
     if not os.path.exists(prefix):
         os.makedirs(prefix)
