@@ -38,8 +38,10 @@ def setup_recursive_generating_function(balanced):
 f(s) = setup_recursive_generating_function(balanced)
 
 
-def create_filename(N, M, balanced, forced_alive, parental_specific, output_folder='GFS'):
-    filename = f'B{str(balanced)}_FA{str(forced_alive)}_PS{str(parental_specific)}_N{str(N)}_M{str(M)}_12_dec'
+def create_filename(N, M, balanced, forced_alive, parental_specific, output_folder='GFS', with_suffix = True):
+    filename = f'B{str(balanced)}_FA{str(forced_alive)}_PS{str(parental_specific)}_N{str(N)}_M{str(M)}'
+    if with_suffix:
+        filename += '_12_dec'
     return os.path.join(output_folder, filename)
 
 
@@ -75,21 +77,9 @@ else:
 
 x = expr.coefficients(s)
 for j in range(len(x)):
-    prefix = "/Users/lmcintosh/GD/GFS/B_" \
-             + str(balanced) \
-             + "_FA" \
-             + str(forced_alive) \
-             + "_PS" \
-             + str(parental_specific) \
-             + "_" \
-             + "N" \
-             + str(N) \
-             + "_M" \
-             + str(M) \
-             + "/"
+    prefix = create_filename(N, M, balanced, forced_alive, parental_specific, with_suffix=False)
     if not os.path.exists(prefix):
         os.makedirs(prefix)
-    filename = prefix + "c" + str(x[j][1]) + suffix
-    output = open(filename, 'w')
-    output.write(str(x[j][0]))
-    output.close()
+    filename = os.path.join(prefix, f'c{str(x[j][1])}_12_dec')
+    with open(filename, 'w') as output:
+        output.write(str(x[j][0]))
