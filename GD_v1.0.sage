@@ -1,7 +1,8 @@
 # this program generates polynomials for the GD model and uses memoisation to reduce memory consumption and computational time.
 
 import sys
-print sys.argv
+
+print(sys.argv)
 
 N=int(sys.argv[1])
 M=int(sys.argv[2])
@@ -10,7 +11,7 @@ if sys.argv[3] == 'True':
 elif sys.argv[3] == 'False':
   balanced = False
 else:
-  print "ERROR"
+  print("ERROR")
   sys.exit()
 
 if sys.argv[4] == 'True':
