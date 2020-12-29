@@ -1,34 +1,20 @@
 # this program generates polynomials for the GD model and uses memoisation to reduce memory consumption and computational time.
 
-import sys
+import argparse
 
-print(sys.argv)
+parser = argparse.ArgumentParser()
+parser.add_argument('N', type=int)
+parser.add_argument('M', type=int)
+parser.add_argument('--balanced', action='store_true')
+parser.add_argument('--forced_alive', action='store_true')
+parser.add_argument('--parental_specific', action='store_true')
+args = parser.parse_args()
 
-N=int(sys.argv[1])
-M=int(sys.argv[2])
-if sys.argv[3] == 'True':
-  balanced = True
-elif sys.argv[3] == 'False':
-  balanced = False
-else:
-  print("ERROR")
-  sys.exit()
-
-if sys.argv[4] == 'True':
-  forced_alive = True
-elif sys.argv[4] == 'False':
-  forced_alive = False
-else:
-  print("ERROR")
-  sys.exit()
-  
-if sys.argv[5] == 'True':
-  parental_specific = True
-elif sys.argv[5] == 'False':
-  parental_specific = False
-else:
-  print("ERROR")
-  sys.exit()
+N = args.N
+M = args.M
+balanced = args.balanced
+forced_alive = args.forced_alive
+parental_specific = args.parental_specific
 
 import sage.libs.ecl
 sage.libs.ecl.ecl_eval("(ext:set-limit 'ext:heap-size 0)")
