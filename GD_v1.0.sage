@@ -46,6 +46,8 @@ def create_filename(N, M, balanced, forced_alive, parental_specific, output_fold
 
 
 filename_output = create_filename(N, M, balanced, forced_alive, parental_specific)
+if not os.path.exists(os.path.dirname(filename_output)):
+    os.mkdir(os.path.dirname(filename_output))
 
 if not os.path.isfile(filename_output):
     if N == 0 and M == -1:
