@@ -50,8 +50,9 @@ def create_filename(N, M, balanced, forced_alive, parental_specific,
 
 def generate_polynomials(N, M, balanced, forced_alive, parental_specific):
     filename_output = create_filename(N, M, balanced, forced_alive, parental_specific)
-    if not os.path.exists(os.path.dirname(filename_output)):
-        os.mkdir(os.path.dirname(filename_output))
+    output_directory = os.path.dirname(filename_output)
+    if not os.path.exists(output_directory):
+        os.mkdir(output_directory)
 
     if not os.path.isfile(filename_output):
         if N == 0 and M == -1:
