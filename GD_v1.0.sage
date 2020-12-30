@@ -12,14 +12,18 @@ from sage.libs.ecl import ecl_eval
 # enlarge the heap by some amount.
 ecl_eval("(ext:set-limit 'ext:heap-size 0)")
 
-parser = argparse.ArgumentParser()
-parser.add_argument('N', type=int)
-parser.add_argument('M', type=int)
-parser.add_argument('--balanced', action='store_true')
-parser.add_argument('--forced_alive', action='store_true')
-parser.add_argument('--parental_specific', action='store_true')
-args = parser.parse_args()
 
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('N', type=int)
+    parser.add_argument('M', type=int)
+    parser.add_argument('--balanced', action='store_true')
+    parser.add_argument('--forced_alive', action='store_true')
+    parser.add_argument('--parental_specific', action='store_true')
+    return parser.parse_args()
+
+
+args = parse_arguments()
 N = args.N
 M = args.M
 balanced = args.balanced
