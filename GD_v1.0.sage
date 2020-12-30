@@ -12,6 +12,9 @@ from sage.libs.ecl import ecl_eval
 # enlarge the heap by some amount.
 ecl_eval("(ext:set-limit 'ext:heap-size 0)")
 
+# initialise required global symbolic variables
+var('s, a, b, c')
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -23,23 +26,11 @@ def parse_arguments():
     return parser.parse_args()
 
 
-args = parse_arguments()
-N = args.N
-M = args.M
-balanced = args.balanced
-forced_alive = args.forced_alive
-parental_specific = args.parental_specific
-
-
 def setup_recursive_generating_function(balanced):
-    var('s, a, b, c')
     if balanced:
         return a + (1 - 2*a)*s + a*s^2
     else:
         return a + b*s + c*s^2
-
-
-f(s) = setup_recursive_generating_function(balanced)
 
 
 def create_filename(N, M, balanced, forced_alive, parental_specific,
@@ -57,45 +48,63 @@ def create_filename(N, M, balanced, forced_alive, parental_specific,
     return os.path.join(output_folder, filename)
 
 
-filename_output = create_filename(N, M, balanced, forced_alive, parental_specific)
-if not os.path.exists(os.path.dirname(filename_output)):
-    os.mkdir(os.path.dirname(filename_output))
+def generate_polynomials(N, M, balanced, forced_alive, parental_specific):
+    filename_output = create_filename(N, M, balanced, forced_alive, parental_specific)
+    if not os.path.exists(os.path.dirname(filename_output)):
+        os.mkdir(os.path.dirname(filename_output))
 
-if not os.path.isfile(filename_output):
-    if N == 0 and M == -1:
-        if parental_specific:
-            expr = s
+    if not os.path.isfile(filename_output):
+        if N == 0 and M == -1:
+            if parental_specific:
+                expr = s
+            else:
+                expr = s^2
+            save(expr, filename_output)
         else:
-            expr = s^2
-        save(expr, filename_output)
+            # load the preceding solution (do this dynamically to
+            # minimise memory consumption as it is the limiting factor)
+            if M == -1:
+                filename_input = create_filename(N - 1, M, balanced, forced_alive, parental_specific)
+            else:
+                filename_input = create_filename(N, M - 1, balanced, forced_alive, parental_specific)
+            GFS = load(filename_input)
+
+            if M == 0:
+                # then double the genome
+                expr = GFS.substitute(s == s^2)
+            else:
+                f(s) = setup_recursive_generating_function(balanced)
+                expr = GFS.substitute(s == f(s))
+                if forced_alive:
+                    expr = expr + GFS.substitute(s == 0) * (s - 1)
+
+            save(expr, filename_output)
     else:
-        # load the preceding solution (do this dynamically to
-        # minimise memory consumption as it is the limiting factor)
-        if M == -1:
-            filename_input = create_filename(N - 1, M, balanced, forced_alive, parental_specific)
-        else:
-            filename_input = create_filename(N, M - 1, balanced, forced_alive, parental_specific)
-        GFS = load(filename_input)
+        expr = load(filename_output)
 
-        if M == 0:
-            # then double the genome
-            expr = GFS.substitute(s == s^2)
-        else:
-            expr = GFS.substitute(s == f(s))
-            if forced_alive:
-                expr = expr + GFS.substitute(s == 0) * (s - 1)
+    x = expr.coefficients(s)
+    for j in range(len(x)):
+        prefix = create_filename(N, M, balanced, forced_alive, parental_specific,
+                                 print_parental_specific=False,
+                                 output_folder='terms', with_suffix=False)
+        if not os.path.exists(prefix):
+            os.makedirs(prefix)
+        filename = os.path.join(prefix, f'c{str(x[j][1])}_12_dec')
+        with open(filename, 'w') as output:
+            output.write(str(x[j][0]))
 
-        save(expr, filename_output)
-else:
-    expr = load(filename_output)
 
-x = expr.coefficients(s)
-for j in range(len(x)):
-    prefix = create_filename(N, M, balanced, forced_alive, parental_specific,
-                             print_parental_specific=False,
-                             output_folder='terms', with_suffix=False)
-    if not os.path.exists(prefix):
-        os.makedirs(prefix)
-    filename = os.path.join(prefix, f'c{str(x[j][1])}_12_dec')
-    with open(filename, 'w') as output:
-        output.write(str(x[j][0]))
+def main():
+    # get required parameters
+    args = parse_arguments()
+    N = args.N
+    M = args.M
+    balanced = args.balanced
+    forced_alive = args.forced_alive
+    parental_specific = args.parental_specific
+
+    generate_polynomials(N, M, balanced, forced_alive, parental_specific)
+
+
+if __name__ == '__main__':
+    main()
