@@ -38,10 +38,18 @@ def setup_recursive_generating_function(balanced):
 f(s) = setup_recursive_generating_function(balanced)
 
 
-def create_filename(N, M, balanced, forced_alive, parental_specific, output_folder='GFS', with_suffix = True):
-    filename = f'B{str(balanced)}_FA{str(forced_alive)}_PS{str(parental_specific)}_N{str(N)}_M{str(M)}'
+def create_filename(N, M, balanced, forced_alive, parental_specific,
+                    print_parental_specific=True, output_folder='GFS', with_suffix = True):
+    filename = f'B{str(balanced)}_FA{str(forced_alive)}'
+
+    if print_parental_specific:
+        filename += f'_PS{str(parental_specific)}'
+
+    filename += f'_N{str(N)}_M{str(M)}'
+
     if with_suffix:
         filename += '_12_dec'
+
     return os.path.join(output_folder, filename)
 
 
@@ -79,7 +87,9 @@ else:
 
 x = expr.coefficients(s)
 for j in range(len(x)):
-    prefix = create_filename(N, M, balanced, forced_alive, parental_specific, with_suffix=False)
+    prefix = create_filename(N, M, balanced, forced_alive, parental_specific,
+                             print_parental_specific=False,
+                             output_folder='terms', with_suffix=False)
     if not os.path.exists(prefix):
         os.makedirs(prefix)
     filename = os.path.join(prefix, f'c{str(x[j][1])}_12_dec')
