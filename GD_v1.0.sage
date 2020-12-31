@@ -3,14 +3,15 @@
 import os
 import argparse
 
-from sage.libs.ecl import ecl_eval
+# uncomment the two lines below to disable heap size limit
+#from sage.libs.ecl import ecl_eval
 
 # from https://common-lisp.net/project/ecl/static/manual/Memory-Management.html
 # If the heap size had a finite limit, ECL offers the user the chance to resize it, issuing a
 # restartable condition. The user may at this point use (ext:set-limit 'ext:heap-size 0) to
 # remove the heap limit and avoid further messages, or use the (continue) restart to let ECL
 # enlarge the heap by some amount.
-ecl_eval("(ext:set-limit 'ext:heap-size 0)")
+#ecl_eval("(ext:set-limit 'ext:heap-size 0)")
 
 # initialise required global symbolic variables
 var('s, a, b, c')
