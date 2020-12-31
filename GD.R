@@ -84,6 +84,7 @@ likelihoodGDany <-
         lowest <- 0
       for (M in lowest:maxM) {
         # should allow a setting to free this up:
+        # a and b are not used, safe to delete?
         a <- alpha
         b <- 1 - 2 * alpha
         c <- alpha
@@ -91,7 +92,7 @@ likelihoodGDany <-
         N <- as.character(N)
         M <- as.character(M)
         
-        for (i in 1:nrow(simpledata)) {
+        for (i in seq_len(nrow(simpledata))) {
           if (sum(is.na(simpledata[i, c("A", "B")])) > 0) {
             #print(paste("FAILED",N,M,alpha,simpledata[i,]))
             new <- c(-Inf,-Inf,-Inf,-Inf)
