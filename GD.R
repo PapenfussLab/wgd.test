@@ -17,19 +17,15 @@ number_ticks <- function(n) {
   function(limits)
     pretty(limits, n)
 }
-load_centromeres <- function() {
-  file <- "centromeres.txt"
-  BASE <-  "."
-  centromeres <-
-    read.table(paste(BASE, file, sep = ''), sep = "\t", header = FALSE)
-  colnames(centromeres) <- c("chr", "x")
-  centromeres$x <- as.numeric(centromeres$x) * 10 ^ 6
+
+load_centromeres <- function(centromeres_file) {
+  centromeres <- read.delim(centromeres_file, header = FALSE)
+  colnames(centromeres) <- c("chromosome", "x")
+  centromeres["x"] <- centromeres["x"] * 10^6
   return(centromeres)
 }
 
-centromeres <- load_centromeres()
-colnames(centromeres) <- c("chromosome", "x")
-
+centromeres <- load_centromeres("centromeres.txt")
 
 get_CN_track <- function(mat, xmax) {
   g <- ggplot(mat) +
