@@ -25,34 +25,37 @@ load_centromeres <- function(centromeres_file) {
 
 centromeres <- load_centromeres("centromeres.txt")
 
-get_CN_track <- function(mat, xmax) {
+get_CN_track <- function(mat, xmax, centromeres = centromeres) {
+  break.from <- 0
+  break.to <- 3 * 10^9
+  break.by <- 50 * 10^6
+  number.of.intervals <- 20
+  
   g <- ggplot(mat) +
-    geom_segment(aes(
-      x = start.pos,
-      y = A,
-      xend = end.pos,
-      yend = A,
-      col = chromosome
-    ),
-    size = 2) +
-    geom_segment(aes(
-      x = start.pos,
-      y = B,
-      xend = end.pos,
-      yend = B
-    ), size = 1) +
+    geom_segment(aes(x = start.pos, xend = end.pos, y = A, yend = A,
+                     col = chromosome), size = 2) +
+    geom_segment(aes(x = start.pos, xend = end.pos, y = B, yend = B), size = 1) +
     geom_vline(data = centromeres, aes(xintercept = x, col = chromosome)) +
+    
+    # from ?formula
+    # There are two special interpretations of . in a formula.
+    # The usual one is in the context of a data argument
+    # of model fitting functions and means
+    # ‘all columns not otherwise in the formula’: see terms.formula.
     facet_grid(. ~ chromosome, scales = "free_x", space = "free") +
-    scale_x_continuous(breaks = seq(0, 3 * 10 ^ 9, 50 * 10 ^ 6)) +
+    
+    scale_x_continuous(breaks = seq(break.from, break.to, break.by)) +
+    scale_y_continuous(breaks = number_ticks(number.of.intervals)) +
+    coord_cartesian(ylim = c(0, xmax)) +
+    
     theme_bw() +
-    theme(axis.text.x = element_blank(), legend.position = "none") + #,legend.background = element_rect(fill = "white"),panel.spacing = unit(, "lines")
+    theme(axis.text.x = element_blank(), legend.position = "none") +
     xlab("50 MB ticks") +
-    scale_y_continuous(breaks = number_ticks(20)) +
-    ylab("major/minor CN") + ggtitle("CN track") + coord_cartesian(ylim =
-                                                                     c(0, xmax))
+    ylab("major/minor CN") +
+    ggtitle("CN track")
+  
   return(g)
 }
-
 
 likelihoodGDany <-
   function(alpha,
