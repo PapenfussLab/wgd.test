@@ -194,29 +194,24 @@ likelihoodGDany <-
     return(LIKES)
   }
 
-getmylikelihood <- function(x, N, M, FA) {
+getmylikelihood <- function(x, N, M, FA,
+                            terms.path = file.path("GD", "terms")) {
   if (FA) {
     FA <- "True"
-  } else{
+  } else {
     FA <- "False"
   }
-  dir <- paste("./GD/terms/BTrue_FA",
-               FA,
-               "_N",
-               as.character(N),
-               "_M",
-               as.character(M),
-               "/",
-               sep = "")
-  file <- paste("c", as.character(x), "_12_dec", sep = "")
-  filename <- paste(dir, file, sep = "")
+  
+  dir <- paste0("BTrue_FA", FA, "_N", N, "_M", M)
+  file <- paste0("c", x, "_12_dec")
+  filename <- file.path(terms.path, dir, file)
+  
+  # should this be an error or just a warning?
   if (!file.exists(filename)) {
-    # print(paste("ERROR with ",filename))
-    return()
+    stop(filename, " can not be opened.")
   }
-  mytext <- try(read.table(filename, sep = ","))
-  mytext <- (as.character(mytext[1, 1]))
-  mytext
+  
+  return(readLines(filename))
 }
 
 outputdf <- data.frame(
