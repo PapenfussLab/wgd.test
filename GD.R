@@ -3,8 +3,6 @@
 # Author: Lachlan Mcintosh
 # Conceived by: Lachlan Mcintosh and Tony Papenfuss
 
-# rm(list=ls())
-
 parent_dir <- "."
 all_files <- list.files(parent_dir)
 all_files <- all_files[[1]]
@@ -12,7 +10,7 @@ all_files
 library(ggplot2)
 library(gridExtra)
 
-# a funciton to set the number of xticks when using ggplot
+# a function to set the number of xticks when using ggplot
 number_ticks <- function(n) {
   function(limits)
     pretty(limits, n)
@@ -64,9 +62,9 @@ likelihoodGDany <-
            maxN = 6,
            maxM = 3) {
     # likelihoodhalfGD <- function(alpha,simpledata,half = FALSE){
-    likelihoods <- data.frame('N' = as.numeric(),
-                              'M' = as.numeric(),
-                              'likelihood' = as.numeric())
+    likelihoods <- data.frame('N' = numeric(),
+                              'M' = numeric(),
+                              'likelihood' = numeric())
     mylikelihood <-
       lapply(simpledata[1, c("A", "B")], function(x)
         getmylikelihood(x, 0,-1, FA = F))
@@ -215,20 +213,21 @@ getmylikelihood <- function(x, N, M, FA,
 }
 
 outputdf <- data.frame(
-  "name" = as.character(),
-  "lmax" = as.numeric(),
-  "alphamax" = as.numeric(),
-  "indexmaxN" = as.numeric(),
-  "indexmaxM" = as.numeric(),
-  "lmax_half" = as.numeric(),
-  "alphamax_half" = as.numeric(),
-  "indexmaxN_half" = as.numeric(),
-  "indexmaxM_half" = as.numeric(),
-  "lmax_nogd" = as.numeric(),
-  "alphamax_nogd" = as.numeric(),
-  "indexmax_nogd" = as.numeric()
+  "name" = character(),
+  "lmax" = numeric(),
+  "alphamax" = numeric(),
+  "indexmaxN" = numeric(),
+  "indexmaxM" = numeric(),
+  "lmax_half" = numeric(),
+  "alphamax_half" = numeric(),
+  "indexmaxN_half" = numeric(),
+  "indexmaxM_half" = numeric(),
+  "lmax_nogd" = numeric(),
+  "alphamax_nogd" = numeric(),
+  "indexmax_nogd" = numeric()
 )
 
+# what is this file and is it still / will be used?
 # all_files = "/Users/lmcintosh/Downloads/CA004-8.CNV.txt"
 
 i <- 0
@@ -468,7 +467,13 @@ outputdf$GD_AIC <- outputdf$AIC_full <  outputdf$AIC_null
 # outputdf$GD_half_AIC <- outputdf$AIC_half < outputdf$AIC_full & outputdf$AIC_half < outputdf$AIC_null
 outputdf$no_GD_AIC <-  outputdf$AIC_null <= outputdf$AIC_full
 
-# AIC is founded on information theory: it offers a relative estimate of the information lost when a given model is used to represent the process that generates the data. In doing so, it deals with the trade-off between the goodness of fit of the model and the complexity of the model. We choose the candidate model that minimized the information loss.
+# AIC is founded on information theory:
+# it offers a relative estimate of the information lost
+# when a given model is used to represent the process that
+# generates the data. In doing so, it deals with the trade-off
+# between the goodness of fit of the model and the complexity of
+# the model. We choose the candidate model that minimized
+# the information loss.
 
 outputdf$bestAIC <-
   apply(outputdf[, c("AIC_full", "AIC_null")], 1, min)
