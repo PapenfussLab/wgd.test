@@ -58,140 +58,138 @@ get_CN_track <- function(mat, xmax, centromeres = centromeres) {
 }
 
 likelihoodGDany <-
-  function(alpha,
-           simpledata,
-           half = FALSE,
-           FA = TRUE,
-           maxN = 6,
-           maxM = 3) {
-    # likelihoodhalfGD <- function(alpha,simpledata,half = FALSE){
-    likelihoods <- data.frame('N' = numeric(),
-                              'M' = numeric(),
-                              'likelihood' = numeric())
-    mylikelihood <-
-      lapply(simpledata[1, c("A", "B")], function(x)
-        getmylikelihood(x, 0,-1, FA = F))
-    mylikelihood_nogd <-
-      lapply(simpledata[1, c("A", "B")], function(x)
-        getmylikelihood(x, 0,-1, FA = F))
+  function(alpha, simpledata, half = FALSE, FA = TRUE, maxN = 6, maxM = 3) {
+    
+    likelihoods <- data.frame("N" = numeric(), "M" = numeric(),
+                              "likelihood" = numeric())
+    mylikelihood <- lapply(simpledata[1, c("A", "B")], function(x) {
+              getmylikelihood(x, 0, -1, FA = FALSE)
+    })
+    mylikelihood_nogd <- lapply(simpledata[1, c("A", "B")], function(x) {
+              getmylikelihood(x, 0, -1, FA = FALSE)
+    })
     
     for (N in 0:maxN) {
-      lowest <- -1
-      if (half)
+      
+      if (half) {
         lowest <- 0
+      } else {
+        lowest <- -1
+      }
+      
       for (M in lowest:maxM) {
-        # should allow a setting to free this up:
         # a and b are not used, safe to delete?
+        # should allow a setting to free this up:
         a <- alpha
         b <- 1 - 2 * alpha
         c <- alpha
         
-        N <- as.character(N)
-        M <- as.character(M)
-        
         for (i in seq_len(nrow(simpledata))) {
+          
           if (sum(is.na(simpledata[i, c("A", "B")])) > 0) {
-            #print(paste("FAILED",N,M,alpha,simpledata[i,]))
-            new <- c(-Inf,-Inf,-Inf,-Inf)
-            if (i == 1)
+            new <- c(-Inf, -Inf, -Inf, -Inf)
+            
+            if (i == 1) {
               new_likelihood <- new
-            if (i > 1)
+            } else {
               new_likelihood <- rbind(new_likelihood, new)
+            }
+            
             next
           }
           
           if (half) {
             if (min(simpledata[i, c("A", "B")]) == 0) {
-              mylikelihood$A <-
-                getmylikelihood(min(simpledata[i, c("A", "B")]), N, M, FA =
-                                  F)
-              mylikelihood$B <-
-                getmylikelihood(max(simpledata[i, c("A", "B")]), N, M, FA =
-                                  FA)
-              mylikelihood_nogd$A <-
-                getmylikelihood(min(simpledata[i, c("A", "B")]), N, "-1", FA =
-                                  F)
-              mylikelihood_nogd$B <-
-                getmylikelihood(max(simpledata[i, c("A", "B")]), N, "-1", FA =
-                                  FA)
-            } else{
-              mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x)
-                getmylikelihood(x, N, M, FA = F))
-              mylikelihood_nogd <-
-                lapply(simpledata[i, c("A", "B")], function(x)
-                  getmylikelihood(x, N, "-1", FA = F))
+              mylikelihood["A"] <-
+                getmylikelihood(min(simpledata[i, c("A", "B")]), N, M, FA = FALSE)
+              mylikelihood["B"] <-
+                getmylikelihood(max(simpledata[i, c("A", "B")]), N, M, FA = FA)
+              mylikelihood_nogd["A"] <-
+                getmylikelihood(min(simpledata[i, c("A", "B")]), N, -1, FA = FALSE)
+              mylikelihood_nogd["B"] <-
+                getmylikelihood(max(simpledata[i, c("A", "B")]), N, -1, FA = FA)
+              
+            } else {
+              mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x) {
+                getmylikelihood(x, N, M, FA = FALSE)
+              })
+              mylikelihood_nogd <- lapply(simpledata[i, c("A", "B")], function(x) {
+                getmylikelihood(x, N, -1, FA = FALSE)
+              })
             }
-          } else{
+            
+          } else {
             if (min(simpledata[i, c("A", "B")]) == 0) {
-              mylikelihood$A <-
-                getmylikelihood(min(simpledata[i, c("A", "B")]), N, M, FA =
-                                  F)
-              mylikelihood$B <-
-                getmylikelihood(max(simpledata[i, c("A", "B")]), N, M, FA =
-                                  FA)
+              mylikelihood["A"] <-
+                getmylikelihood(min(simpledata[i, c("A", "B")]), N, M, FA = FALSE)
+              mylikelihood["B"] <-
+                getmylikelihood(max(simpledata[i, c("A", "B")]), N, M, FA = FA)
               mylikelihood_nogd <- mylikelihood
-            } else{
-              mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x)
-                getmylikelihood(x, N, M, FA = F))
+              
+            } else {
+              mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x) {
+                getmylikelihood(x, N, M, FA = FALSE)
+              })
               mylikelihood_nogd <- mylikelihood
             }
           }
-          if (is.null(mylikelihood$A) |
-              is.null(mylikelihood$B) |
-              is.null(mylikelihood_nogd$A) |
-              is.null(mylikelihood_nogd$B)) {
-            #print(paste("FAILED",N,M,alpha,simpledata[i,]))
+          
+          if (is.null(mylikelihood["A"]) |
+              is.null(mylikelihood["B"]) |
+              is.null(mylikelihood_nogd["A"]) |
+              is.null(mylikelihood_nogd["B"])) {
             new <- c(-Inf,-Inf,-Inf,-Inf)
-            if (i == 1)
+            
+            if (i == 1) {
               new_likelihood <- new
-            if (i > 1)
+            } else {
               new_likelihood <- rbind(new_likelihood, new)
+            }
+            
             next
           }
-          val <- sapply(mylikelihood, function(x)
-            log(as.numeric(eval(
-              parse(text = x)
-            ))))
-          val_nogd <- sapply(mylikelihood_nogd, function(x)
-            log(as.numeric(eval(
-              parse(text = x)
-            ))))
-          if (i == 1)
+          
+          val <- sapply(mylikelihood, function(x) {
+            log(as.numeric(eval(parse(text = x))))
+          })
+          val_nogd <- sapply(mylikelihood_nogd, function(x) {
+            log(as.numeric(eval(parse(text = x))))
+          })
+          
+          if (i == 1) {
             new_likelihood <- c(val, val_nogd)
-          if (i > 1)
-            new_likelihood <-
-            rbind(new_likelihood, c(val, val_nogd))
+          } else {
+            new_likelihood <- rbind(new_likelihood, c(val, val_nogd))
+          }
         }
         
         if (half) {
           optA <- new_likelihood[, 1] + new_likelihood[, 4]
           optB <- new_likelihood[, 2] + new_likelihood[, 3]
           best <- optB
-          best[which(optA > optB)] <- optA[which(optA > optB)]
-        } else{
+          best[optA > optB] <- optA[optA > optB]
+          
+        } else {
           best <- new_likelihood[, 1] + new_likelihood[, 2]
         }
+        
         likelihood <- sum(best)
-        likelihoods <-
-          rbind(likelihoods,
-                data.frame(
-                  'N' = N,
-                  'M' = M,
-                  'likelihood' = likelihood
-                ))
+        likelihoods <- rbind(likelihoods, data.frame("N" = N, "M" = M,
+                                                     "likelihood" = likelihood))
       }
     }
-    LIKES <- matrix(rep(NA), nrow = (maxN + 1), ncol = (maxM + 2))
-    for (N in 0:(maxN)) {
-      for (M in-1:maxM) {
-        temp <- likelihoods[which(likelihoods$N == N),]
-        temp <- temp[which(temp$M == M),]
+    
+    LIKES <- matrix(nrow = (maxN + 1), ncol = (maxM + 2))
+    for (N in 0:maxN) {
+      for (M in -1:maxM) {
+        temp <- likelihoods[likelihoods["N"] == N, ]
+        temp <- temp[temp["M"] == M, ]
         if (nrow(temp) > 0) {
           LIKES[N + 1, M + 2] <- as.numeric(temp[, "likelihood"])
         }
       }
     }
-    # print(LIKES)
+    
     return(LIKES)
   }
 
