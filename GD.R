@@ -245,13 +245,10 @@ for (file in all_files) {
       print("Could not load this file")
       next
     }
-    chr_levels <- as.character(sort(unique(as.numeric(
-      data$chromosome
-    ))))
-    chr_levels <- c(chr_levels[1:(length(chr_levels) - 1)], "X")
-    #assumes that the only non numeric chromosome is "X"
     
-    data$chromosome <- factor(data$chromosome, levels = chr_levels)
+    # assumes that the chromosomes are already sorted
+    chr_levels <- unique(data$chromosome)
+    data["chromosome"] <- factor(data["chromosome"], levels = chr_levels)
     
     # now we want to make a simplified version of the data
     # where every chromosomal arm is independent!
