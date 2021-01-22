@@ -407,7 +407,7 @@ outputdf["GD"] <- outputdf["lmax"] > outputdf["lmax_nogd"]
 outputdf["no_GD"] <- outputdf["lmax_nogd"] >= outputdf["lmax"]
 
 # this isn't assigned to anything, safe to delete?
-c(sum(outputdf["GD"]), sum(outputdf["GD_half"]), sum(outputdf["no_GD"]))
+c(sum(outputdf[["GD"]]), sum(outputdf[["GD_half"]]), sum(outputdf[["no_GD"]]))
 # this isn't assigned to anything, safe to delete?
 outputdf[, c("lmax", "lmax_nogd", "GD", "no_GD")]
 
