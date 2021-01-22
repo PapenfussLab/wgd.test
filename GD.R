@@ -21,7 +21,7 @@ load_centromeres <- function(centromeres_file) {
 
 centromeres <- load_centromeres("centromeres.txt")
 
-get_CN_track <- function(mat, xmax, centromeres = centromeres) {
+get_CN_track <- function(mat, xmax, centromeres) {
   break.from <- 0
   break.to <- 3 * 10^9
   break.by <- 50 * 10^6
@@ -315,10 +315,10 @@ for (file in all_files) {
                              ))
     }
     
-    g1 <- get_CN_track(data, max(data[, c("A", "B")], na.rm = TRUE))
+    g1 <- get_CN_track(data, max(data[, c("A", "B")], na.rm = TRUE), centromeres)
     # what is the purpose of this line?
     simple_data <- simple_data[!is.nan(simple_data["A"]), ]
-    g2 <- get_CN_track(simple_data, max(simple_data[, c("A", "B")], na.rm = TRUE))
+    g2 <- get_CN_track(simple_data, max(simple_data[, c("A", "B")], na.rm = TRUE), centromeres)
     
     print(grid.arrange(g1, g2))
     
