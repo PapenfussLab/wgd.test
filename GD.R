@@ -201,9 +201,10 @@ getmylikelihood <- function(x, N, M, FA,
   file <- paste0("c", x, "_12_dec")
   filename <- file.path(terms.path, dir, file)
   
-  # should this be an error or just a warning?
+  # issue a warning if terms have not been calculated
   if (!file.exists(filename)) {
-    stop(filename, " can not be opened.")
+    warning(filename, " can not be opened.")
+    return()
   }
   
   return(readLines(filename))
