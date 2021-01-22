@@ -130,10 +130,10 @@ likelihoodGDany <-
             }
           }
           
-          if (is.null(mylikelihood["A"]) |
-              is.null(mylikelihood["B"]) |
-              is.null(mylikelihood_nogd["A"]) |
-              is.null(mylikelihood_nogd["B"])) {
+          if (is.null(mylikelihood[["A"]]) |
+              is.null(mylikelihood[["B"]]) |
+              is.null(mylikelihood_nogd[["A"]]) |
+              is.null(mylikelihood_nogd[["B"]])) {
             new <- c(-Inf,-Inf,-Inf,-Inf)
             
             if (i == 1) {
