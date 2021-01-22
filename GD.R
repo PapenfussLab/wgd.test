@@ -248,7 +248,7 @@ for (file in all_files) {
     
     # assumes that the chromosomes are already sorted
     chr_levels <- unique(data$chromosome)
-    data["chromosome"] <- factor(data["chromosome"], levels = chr_levels)
+    data["chromosome"] <- factor(data[, "chromosome"], levels = chr_levels)
     
     # now we want to make a simplified version of the data
     # where every chromosomal arm is independent!
@@ -282,19 +282,19 @@ for (file in all_files) {
       }
       
       # calculate the summary statistics for each arm:
-      meanAp <- sum((chr_data_p["end.pos"] - chr_data_p["start.pos"]) * chr_data_p["A"]) /
-        sum(chr_data_p["end.pos"] - chr_data_p["start.pos"])
-      meanBp <- sum((chr_data_p["end.pos"] - chr_data_p["start.pos"]) * chr_data_p["B"]) /
-        sum(chr_data_p["end.pos"] - chr_data_p["start.pos"])
-      startp <- min(chr_data_p["start.pos"], na.rm = TRUE)
-      endp <- max(chr_data_p["end.pos"], na.rm = TRUE)
+      meanAp <- sum((chr_data_p[, "end.pos"] - chr_data_p[, "start.pos"]) * chr_data_p[, "A"]) /
+        sum(chr_data_p[, "end.pos"] - chr_data_p[, "start.pos"])
+      meanBp <- sum((chr_data_p[, "end.pos"] - chr_data_p[, "start.pos"]) * chr_data_p[, "B"]) /
+        sum(chr_data_p[, "end.pos"] - chr_data_p[, "start.pos"])
+      startp <- min(chr_data_p[, "start.pos"], na.rm = TRUE)
+      endp <- max(chr_data_p[, "end.pos"], na.rm = TRUE)
       
-      meanAq <- sum((chr_data_q["end.pos"] - chr_data_q["start.pos"]) * chr_data_q["A"]) /
-        sum(chr_data_q["end.pos"] - chr_data_q["start.pos"])
-      meanBq <- sum((chr_data_q["end.pos"] - chr_data_q["start.pos"]) * chr_data_q["B"]) /
-        sum(chr_data_q["end.pos"] - chr_data_q["start.pos"])
-      startq <- min(chr_data_q["start.pos"], na.rm = TRUE)
-      endq <- max(chr_data_q["end.pos"], na.rm = TRUE)
+      meanAq <- sum((chr_data_q[, "end.pos"] - chr_data_q[, "start.pos"]) * chr_data_q[, "A"]) /
+        sum(chr_data_q[, "end.pos"] - chr_data_q[, "start.pos"])
+      meanBq <- sum((chr_data_q[, "end.pos"] - chr_data_q[, "start.pos"]) * chr_data_q[, "B"]) /
+        sum(chr_data_q[, "end.pos"] - chr_data_q[, "start.pos"])
+      startq <- min(chr_data_q[, "start.pos"], na.rm = TRUE)
+      endq <- max(chr_data_q[, "end.pos"], na.rm = TRUE)
       
       # put the learnt information in a data frame:
       simple_data <- rbind(simple_data,
@@ -317,7 +317,7 @@ for (file in all_files) {
     
     g1 <- get_CN_track(data, max(data[, c("A", "B")], na.rm = TRUE), centromeres)
     # what is the purpose of this line?
-    simple_data <- simple_data[!is.nan(simple_data["A"]), ]
+    simple_data <- simple_data[!is.nan(simple_data[, "A"]), ]
     g2 <- get_CN_track(simple_data, max(simple_data[, c("A", "B")], na.rm = TRUE), centromeres)
     
     print(grid.arrange(g1, g2))
