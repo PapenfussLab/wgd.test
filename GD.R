@@ -123,7 +123,7 @@ likelihoodGDany <-
               
             } else {
               mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x) {
-                getmylikelihood(x, N, M, FA = FALSE, terms.path = terms_path)
+                getmylikelihood(x, N, M, FA = FALSE, terms.path = terms.path)
               })
               mylikelihood_nogd <- mylikelihood
             }
