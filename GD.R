@@ -96,29 +96,29 @@ likelihoodGDany <-
           if (half) {
             if (min(simpledata[i, c("A", "B")]) == 0) {
               mylikelihood["A"] <- getmylikelihood(min(simpledata[i, c("A", "B")]),
-                                                   N, M, FA = FALSE, terms.path = terms_path)
+                                                   N, M, FA = FALSE, terms.path = terms.path)
               mylikelihood["B"] <- getmylikelihood(max(simpledata[i, c("A", "B")]),
-                                                   N, M, FA = FA, terms.path = terms_path)
+                                                   N, M, FA = FA, terms.path = terms.path)
               mylikelihood_nogd["A"] <- getmylikelihood(min(simpledata[i, c("A", "B")]),
-                                                        N, -1, FA = FALSE, terms.path = terms_path)
+                                                        N, -1, FA = FALSE, terms.path = terms.path)
               mylikelihood_nogd["B"] <- getmylikelihood(max(simpledata[i, c("A", "B")]),
-                                                        N, -1, FA = FA, terms.path = terms_path)
+                                                        N, -1, FA = FA, terms.path = terms.path)
               
             } else {
               mylikelihood <- lapply(simpledata[i, c("A", "B")], function(x) {
-                getmylikelihood(x, N, M, FA = FALSE, terms.path = terms_path)
+                getmylikelihood(x, N, M, FA = FALSE, terms.path = terms.path)
               })
               mylikelihood_nogd <- lapply(simpledata[i, c("A", "B")], function(x) {
-                getmylikelihood(x, N, -1, FA = FALSE, terms.path = terms_path)
+                getmylikelihood(x, N, -1, FA = FALSE, terms.path = terms.path)
               })
             }
             
           } else {
             if (min(simpledata[i, c("A", "B")]) == 0) {
               mylikelihood["A"] <- getmylikelihood(min(simpledata[i, c("A", "B")]),
-                                                   N, M, FA = FALSE, terms.path = terms_path)
+                                                   N, M, FA = FALSE, terms.path = terms.path)
               mylikelihood["B"] <- getmylikelihood(max(simpledata[i, c("A", "B")]),
-                                                   N, M, FA = FA, terms.path = terms_path)
+                                                   N, M, FA = FA, terms.path = terms.path)
               mylikelihood_nogd <- mylikelihood
               
             } else {
@@ -235,7 +235,7 @@ main <- function(copy_number_files, centromeres_file,
   
       # data is a tab-delimited copy number file with the following required
       # columns: chromosome, start, end, Minor.Copy.Number, Major.Copy.Number
-      data <- read.delim(file.path(parent_dir, file))
+      data <- read.delim(file)
       
       # skip the file if it is an invalid file
       if (is.null(nrow(data))) {
@@ -244,7 +244,7 @@ main <- function(copy_number_files, centromeres_file,
       }
       
       # assumes that the chromosomes are already sorted
-      chr_levels <- unique(data["chromosome"])
+      chr_levels <- unique(data[, "chromosome"])
       data["chromosome"] <- factor(data[, "chromosome"], levels = chr_levels)
       
       # now we want to make a simplified version of the data
@@ -333,8 +333,10 @@ main <- function(copy_number_files, centromeres_file,
       
       for (alpha in 1:10 / 50) {
   
-        likes <- likelihoodGDany(alpha, simple_data, half = FALSE, FA = FALSE)
-        likes_half <- likelihoodGDany(alpha, simple_data, half = TRUE, FA = FALSE)
+        likes <- likelihoodGDany(alpha, simple_data, half = FALSE, FA = FALSE,
+                                 terms.path = terms_path)
+        likes_half <- likelihoodGDany(alpha, simple_data, half = TRUE, FA = FALSE,
+                                      terms.path = terms_path)
         
         l <- max(likes[, 2:ncol(likes)], na.rm = TRUE)
         l_nogd <- max(likes[, 1], na.rm = TRUE)
@@ -430,6 +432,4 @@ main <- function(copy_number_files, centromeres_file,
   outputdf["rl_noGD"] <- exp((outputdf["bestAIC"] - outputdf["AIC_null"]) / 2)
   
   write.table(outputdf, file = output_file)
-  
-  all_files[!(all_files %in% outputdf["name"])]
 }
