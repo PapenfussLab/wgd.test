@@ -431,5 +431,5 @@ main <- function(copy_number_files, centromeres_file,
   outputdf["rl_GD"] <- exp((outputdf["bestAIC"] - outputdf["AIC_full"]) / 2)
   outputdf["rl_noGD"] <- exp((outputdf["bestAIC"] - outputdf["AIC_null"]) / 2)
   
-  write.table(outputdf, file = output_file)
+  write.table(outputdf, file = output_file, quote = FALSE, sep = "\t", row.names = FALSE)
 }
