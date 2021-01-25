@@ -1,19 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
-NS="0 1 2 3 4 5"
-MS="-1 0 1 2 3 4"
-BOOLS="True False"
-TRUE="True"
-FALSE="False"
+minimum_n=0
+maximum_n=3
+#maximum_n=5
+minimum_m=-1
+maximum_m=3
+#maximum_m=4
 
-for N in $NS;
-do
-  for M in $MS;
-  do
-    for FA in $BOOLS;
-    do
-      echo $N $M $B $FA
-      /Users/lmcintosh/Documents/SageMath/sage GD_v1.0.sage $N $M $TRUE $FA $FALSE
-    done;
+for n in $(seq "$minimum_n" "$maximum_n"); do
+  for m in $(seq "$minimum_m" "$maximum_m"); do
+      printf 'N=%d; M=%d\n' "$n" "$m"
+      sage GD_v1.0.sage --balanced $n $m
+      sage GD_v1.0.sage --balanced --forced_alive $n $m
   done;
 done;
